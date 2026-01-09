@@ -1,0 +1,52 @@
+[
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/products"
+    },
+    "httpResponseTemplate": {
+      "templateType": "VELOCITY",
+      "template": "{\"statusCode\": 201, \"headers\": {\"Content-Type\": [\"application/json\"]}, \"body\": \"{\\\"wmsProductId\\\": \\\"wms-$!uuid\\\"}\"}",
+      "delay": {"timeUnit": "MILLISECONDS", "value": 0}
+    },
+    "times": {
+      "unlimited": true
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/products/.*\\/dispatch"
+    },
+    "httpResponse": {
+      "statusCode": 200,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "message": "Product dispatch successfully triggered"
+      }
+    },
+    "times": {
+      "unlimited": true
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/products/not-found/dispatch"
+    },
+    "httpResponse": {
+      "statusCode": 404,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "error": "Product not found"
+      }
+    },
+    "times": {
+      "unlimited": true
+    }
+  }
+]

@@ -1,0 +1,71 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: inventory_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    restart: unless-stopped
+
+  wms-mockserver:
+    image: mockserver/mockserver:latest
+    container_name: wms_mockserver
+    ports:
+      - "1080:1080"
+    environment:
+      MOCKSERVER_INITIALIZATION_JSON_PATH: /config/initializerJson.json
+      MOCKSERVER_LOG_LEVEL: INFO
+    volumes:
+      - ./MockServer/wms:/config
+    restart: unless-stopped
+
+  audit-mockserver:
+    image: mockserver/mockserver:latest
+    container_name: audit_mockserver
+    ports:
+      - "1081:1080"
+    environment:
+      MOCKSERVER_INITIALIZATION_JSON_PATH: /config/initializerJson.json
+      MOCKSERVER_LOG_LEVEL: INFO
+    volumes:
+      - ./MockServer/audit:/config
+    restart: unless-stopped
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    restart: always
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  # inventory_api:
+  #   build:
+  #     context: ./InventoryManagement
+  #     dockerfile: src/WebAPI/Dockerfile
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=inventory_db;Username=postgres;Password=postgres
+  #     - ExternalServices__AuditService__BaseUrl=http://audit-mockserver:1080
+  #     - ExternalServices__WmsService__BaseUrl=http://wms-mockserver:1080
+  #     - Email__SmtpHost=mailhog
+  #     - Email__SmtpPort=1025
+  #     - Email__FromEmail=noreply@inventory.com
+  #     - Email__FromName=Inventory Management System
+  #     - Email__EnableSsl=false
+  #   depends_on:
+  #     - postgres
+  #     - wms-mockserver
+  #     - audit-mockserver
+  #     - mailhog
+  #   restart: unless-stopped
+
+volumes:
+  postgres_data:

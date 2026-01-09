@@ -1,0 +1,48 @@
+[
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/logs"
+    },
+    "httpResponse": {
+      "statusCode": 201,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "message": "Audit log entry successfully created"
+      }
+    },
+    "times": {
+      "unlimited": true
+    }
+  },
+  {
+    "httpRequest": {
+      "method": "POST",
+      "path": "/logs",
+      "body": {
+        "type": "JSON",
+        "json": {
+          "userId": "",
+          "email": "",
+          "actionName": "",
+          "timestamp": ""
+        },
+        "matchType": "STRICT"
+      }
+    },
+    "httpResponse": {
+      "statusCode": 400,
+      "headers": {
+        "Content-Type": ["application/json"]
+      },
+      "body": {
+        "error": "Invalid input"
+      }
+    },
+    "times": {
+      "unlimited": true
+    }
+  }
+]
