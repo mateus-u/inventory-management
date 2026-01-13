@@ -1,0 +1,86 @@
+name: Run Tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+          
+      - name: Restore dependencies
+        run: dotnet restore InventoryManagement/InventoryManagement.slnx
+        
+      - name: Build
+        run: dotnet build InventoryManagement/InventoryManagement.slnx --no-restore
+        
+      - name: Run Unit Tests
+        id: unit-tests
+        run: |
+          dotnet test InventoryManagement/tests/Domain.UnitTests/Domain.UnitTests.csproj \
+            --no-build \
+            --verbosity normal \
+            --logger "trx;LogFileName=unit-tests.trx" \
+            --logger "console;verbosity=detailed" \
+            2>&1 | tee unit-test-output.txt
+          
+          UNIT_RESULT=$(grep -A 3 "Test Run Successful\|Test Run Failed" unit-test-output.txt || echo "")
+          echo "$UNIT_RESULT" > unit-summary.txt
+        continue-on-error: true
+        
+      - name: Run Functional Tests
+        id: functional-tests
+        run: |
+          dotnet test InventoryManagement/tests/Application.FunctionalTests/Application.FunctionalTests.csproj \
+            --no-build \
+            --verbosity normal \
+            --logger "trx;LogFileName=functional-tests.trx" \
+            --logger "console;verbosity=detailed" \
+            2>&1 | tee functional-test-output.txt
+          
+          FUNC_RESULT=$(grep -A 3 "Test Run Successful\|Test Run Failed" functional-test-output.txt || echo "")
+          echo "$FUNC_RESULT" > functional-summary.txt
+        continue-on-error: true
+        
+      - name: Generate Test Summary
+        if: always()
+        run: |
+          echo "# 🧪 Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "## 📦 Unit Tests (Domain)" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat unit-summary.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "## 🔧 Functional Tests (Application)" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat functional-summary.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "_Executado em: $(date -u '+%Y-%m-%d %H:%M:%S UTC')_" >> $GITHUB_STEP_SUMMARY
+          
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            **/TestResults/*.trx
+            unit-test-output.txt
+            functional-test-output.txt
