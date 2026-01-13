@@ -1,4 +1,6 @@
-﻿namespace Domain.ValueObjects;
+﻿using Domain.Common.Exceptions;
+
+namespace Domain.ValueObjects;
 
 public sealed record Currency
 {
@@ -10,12 +12,12 @@ public sealed record Currency
     {
         if (string.IsNullOrWhiteSpace(code))
         {
-            throw new ArgumentException("Currency code cannot be empty.", nameof(code));
+            throw new DomainException("Currency code cannot be empty.");
         }
 
         if (code.Length != 3)
         {
-            throw new ArgumentException("Currency code must be 3 characters (ISO 4217).", nameof(code));
+            throw new DomainException("Currency code must be 3 characters");
         }
 
         return new Currency(code.ToUpperInvariant());

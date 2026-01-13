@@ -16,7 +16,6 @@ public class ProductCreateCommandTests : TestingBase
     [Fact]
     public async Task ProductCreateCommand_WithValidData_ShouldCreateProduct()
     {
-        // Arrange
         var supplier = new Supplier("Test Supplier", new Email("test@supplier.com"), 
             Currency.FromCode("USD"), Country.FromCode("US"));
         var category = new Category("Electronics", "ELEC");
@@ -37,14 +36,12 @@ public class ProductCreateCommandTests : TestingBase
             AcquisitionCostUSD = 100m
         };
 
-        // Act
         using var scope = ServiceProvider.CreateScope();
         var handler = new ProductCreateCommandHandler(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());
         
         var result = await handler.HandleAsync(command);
 
-        // Assert
         result.Should().NotBeNull();
         result.Description.Should().Be("Test Product");
         result.SupplierId.Should().Be(supplier.Id);
@@ -61,7 +58,6 @@ public class ProductCreateCommandTests : TestingBase
     [Fact]
     public async Task ProductCreateCommand_WithInvalidSupplier_ShouldThrowException()
     {
-        // Arrange
         var category = new Category("Electronics", "ELEC");
 
         await ExecuteDbContextAsync(async context =>
@@ -73,13 +69,12 @@ public class ProductCreateCommandTests : TestingBase
         var command = new ProductCreateCommand
         {
             Description = "Test Product",
-            SupplierId = Guid.NewGuid(), // Non-existent supplier
+            SupplierId = Guid.NewGuid(),
             CategoryId = category.Id,
             AcquisitionCost = 100m,
             AcquisitionCostUSD = 100m
         };
 
-        // Act & Assert
         using var scope = ServiceProvider.CreateScope();
         var handler = new ProductCreateCommandHandler(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());
@@ -91,7 +86,6 @@ public class ProductCreateCommandTests : TestingBase
     [Fact]
     public async Task ProductCreateCommand_WithInvalidCategory_ShouldThrowException()
     {
-        // Arrange
         var supplier = new Supplier("Test Supplier", new Email("test@supplier.com"),
             Currency.FromCode("USD"), Country.FromCode("US"));
 
@@ -105,12 +99,11 @@ public class ProductCreateCommandTests : TestingBase
         {
             Description = "Test Product",
             SupplierId = supplier.Id,
-            CategoryId = Guid.NewGuid(), // Non-existent category
+            CategoryId = Guid.NewGuid(),
             AcquisitionCost = 100m,
             AcquisitionCostUSD = 100m
         };
 
-        // Act & Assert
         using var scope = ServiceProvider.CreateScope();
         var handler = new ProductCreateCommandHandler(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());
@@ -122,7 +115,6 @@ public class ProductCreateCommandTests : TestingBase
     [Fact]
     public async Task ProductCreateCommand_WithEmptyDescription_ShouldFailValidation()
     {
-        // Arrange
         var command = new ProductCreateCommand
         {
             Description = "",
@@ -134,10 +126,8 @@ public class ProductCreateCommandTests : TestingBase
 
         var validator = new ProductCreateCommandValidator();
 
-        // Act
         var result = await validator.ValidateAsync(command);
 
-        // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().Contain(e => e.PropertyName == nameof(command.Description));
     }
@@ -145,7 +135,6 @@ public class ProductCreateCommandTests : TestingBase
     [Fact]
     public async Task ProductCreateCommand_WithTooLongDescription_ShouldFailValidation()
     {
-        // Arrange
         var command = new ProductCreateCommand
         {
             Description = new string('a', 501), // Exceeds 500 characters
@@ -157,10 +146,8 @@ public class ProductCreateCommandTests : TestingBase
 
         var validator = new ProductCreateCommandValidator();
 
-        // Act
         var result = await validator.ValidateAsync(command);
 
-        // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().Contain(e => e.PropertyName == nameof(command.Description));
     }

@@ -31,17 +31,14 @@ public class ProductTests
     [Fact]
     public void Product_Constructor_ShouldCreateProductWithCorrectProperties()
     {
-        // Arrange
         var description = "Test Product";
         var supplier = CreateTestSupplier();
         var category = CreateTestCategory();
         var acquisitionCost = CreateTestPrice(100m, "USD");
         var acquisitionCostUSD = CreateTestPrice(100m, "USD");
 
-        // Act
         var product = new Product(description, acquisitionCost, acquisitionCostUSD, supplier, category);
 
-        // Assert
         Assert.NotEqual(Guid.Empty, product.Id);
         Assert.Equal(description, product.Description);
         Assert.Equal(supplier, product.Supplier);
@@ -57,17 +54,14 @@ public class ProductTests
     [Fact]
     public void Product_Constructor_ShouldAddProductCreatedEvent()
     {
-        // Arrange
         var description = "Test Product";
         var supplier = CreateTestSupplier();
         var category = CreateTestCategory();
         var acquisitionCost = CreateTestPrice();
         var acquisitionCostUSD = CreateTestPrice();
 
-        // Act
         var product = new Product(description, acquisitionCost, acquisitionCostUSD, supplier, category);
 
-        // Assert
         Assert.Single(product.Events);
         Assert.IsType<ProductCreatedEvent>(product.Events.First());
     }
@@ -75,28 +69,22 @@ public class ProductTests
     [Fact]
     public void SetWmsProductId_ShouldSetCorrectly()
     {
-        // Arrange
         var product = new Product("Test Product", CreateTestPrice(), CreateTestPrice(), CreateTestSupplier(), CreateTestCategory());
         var wmsProductId = "wms-12345";
 
-        // Act
         product.SetWmsProductId(wmsProductId);
 
-        // Assert
         Assert.Equal(wmsProductId, product.WmsProductId);
     }
 
     [Fact]
     public void Sell_WhenProductIsCreated_ShouldSellSuccessfully()
     {
-        // Arrange
         var product = new Product("Test Product", CreateTestPrice(), CreateTestPrice(), CreateTestSupplier(), CreateTestCategory());
         product.ClearEvents();
 
-        // Act
         product.Sell();
 
-        // Assert
         Assert.Equal(ProductStatus.Sold, product.Status);
         Assert.NotNull(product.SoldDate);
         Assert.Single(product.Events);
@@ -106,24 +94,20 @@ public class ProductTests
     [Fact]
     public void Sell_WhenProductIsAlreadySold_ShouldThrowDomainException()
     {
-        // Arrange
         var product = new Product("Test Product", CreateTestPrice(), CreateTestPrice(), CreateTestSupplier(), CreateTestCategory());
         product.Sell();
 
-        // Act & Assert
         var exception = Assert.Throws<DomainException>(() => product.Sell());
-        Assert.Contains("already solded", exception.Message);
+        Assert.Contains("This product has already been sold", exception.Message);
     }
 
     [Fact]
     public void Sell_WhenProductIsCanceled_ShouldThrowDomainException()
     {
-        // Arrange
         var product = new Product("Test Product", CreateTestPrice(), CreateTestPrice(), CreateTestSupplier(), CreateTestCategory());
         product.Sell();
         product.Cancel();
 
-        // Act & Assert
         var exception = Assert.Throws<DomainException>(() => product.Sell());
         Assert.Contains("Cancelled and returned products cannot be sold", exception.Message);
     }
@@ -131,12 +115,10 @@ public class ProductTests
     [Fact]
     public void Sell_WhenProductIsReturned_ShouldThrowDomainException()
     {
-        // Arrange
         var product = new Product("Test Product", CreateTestPrice(), CreateTestPrice(), CreateTestSupplier(), CreateTestCategory());
         product.Sell();
         product.Return();
 
-        // Act & Assert
         var exception = Assert.Throws<DomainException>(() => product.Sell());
         Assert.Contains("Cancelled and returned products cannot be sold", exception.Message);
     }
@@ -144,14 +126,11 @@ public class ProductTests
     [Fact]
     public void Return_WhenProductIsSold_ShouldReturnSuccessfully()
     {
-        // Arrange
         var product = new Product("Test Product", CreateTestPrice(), CreateTestPrice(), CreateTestSupplier(), CreateTestCategory());
         product.Sell();
 
-        // Act
         product.Return();
 
-        // Assert
         Assert.Equal(ProductStatus.Returned, product.Status);
         Assert.NotNull(product.ReturnDate);
     }
@@ -159,10 +138,8 @@ public class ProductTests
     [Fact]
     public void Return_WhenProductIsNotSold_ShouldThrowDomainException()
     {
-        // Arrange
         var product = new Product("Test Product", CreateTestPrice(), CreateTestPrice(), CreateTestSupplier(), CreateTestCategory());
 
-        // Act & Assert
         var exception = Assert.Throws<DomainException>(() => product.Return());
         Assert.Contains("Non sold products cannot be returned", exception.Message);
     }
@@ -170,14 +147,11 @@ public class ProductTests
     [Fact]
     public void Cancel_WhenProductIsSold_ShouldCancelSuccessfully()
     {
-        // Arrange
         var product = new Product("Test Product", CreateTestPrice(), CreateTestPrice(), CreateTestSupplier(), CreateTestCategory());
         product.Sell();
 
-        // Act
         product.Cancel();
 
-        // Assert
         Assert.Equal(ProductStatus.Canceled, product.Status);
         Assert.NotNull(product.CancelDate);
     }
@@ -185,10 +159,8 @@ public class ProductTests
     [Fact]
     public void Cancel_WhenProductIsNotSold_ShouldThrowDomainException()
     {
-        // Arrange
         var product = new Product("Test Product", CreateTestPrice(), CreateTestPrice(), CreateTestSupplier(), CreateTestCategory());
 
-        // Act & Assert
         var exception = Assert.Throws<DomainException>(() => product.Cancel());
         Assert.Contains("Non sold products cannot be cancelled", exception.Message);
     }

@@ -1,3 +1,4 @@
+using Domain.Common.Exceptions;
 using Domain.ValueObjects;
 
 namespace Domain.UnitTests.ValueObjects;
@@ -7,13 +8,10 @@ public class EmailTests
     [Fact]
     public void Email_WithValidAddress_ShouldCreateSuccessfully()
     {
-        // Arrange
         var validEmail = "test@example.com";
 
-        // Act
         var email = new Email(validEmail);
 
-        // Assert
         Assert.NotNull(email);
         Assert.Equal(validEmail, email.Address);
     }
@@ -24,8 +22,7 @@ public class EmailTests
     [InlineData(null)]
     public void Email_WithEmptyOrWhiteSpaceAddress_ShouldThrowArgumentException(string? invalidEmail)
     {
-        // Act & Assert
-        Assert.Throws<ArgumentException>(() => new Email(invalidEmail!));
+        Assert.Throws<DomainException>(() => new Email(invalidEmail!));
     }
 
     [Theory]
@@ -33,8 +30,7 @@ public class EmailTests
     [InlineData("invalid.email")]
     public void Email_WithoutAtSymbol_ShouldThrowArgumentException(string invalidEmail)
     {
-        // Act & Assert
-        Assert.Throws<ArgumentException>(() => new Email(invalidEmail));
+        Assert.Throws<DomainException>(() => new Email(invalidEmail));
     }
 
     [Theory]
@@ -43,10 +39,8 @@ public class EmailTests
     [InlineData("user+tag@example.org")]
     public void Email_WithVariousValidFormats_ShouldCreateSuccessfully(string validEmail)
     {
-        // Act
         var email = new Email(validEmail);
 
-        // Assert
         Assert.NotNull(email);
         Assert.Equal(validEmail, email.Address);
     }

@@ -1,3 +1,4 @@
+using Domain.Common.Exceptions;
 using Domain.ValueObjects;
 
 namespace Domain.UnitTests.ValueObjects;
@@ -7,13 +8,10 @@ public class CurrencyTests
     [Fact]
     public void Currency_WithValidCode_ShouldCreateSuccessfully()
     {
-        // Arrange
         var validCode = "USD";
 
-        // Act
         var currency = Currency.FromCode(validCode);
 
-        // Assert
         Assert.NotNull(currency);
         Assert.Equal("USD", currency.Code);
     }
@@ -24,10 +22,8 @@ public class CurrencyTests
     [InlineData("eur")]
     public void Currency_WithLowercaseOrMixedCase_ShouldConvertToUppercase(string code)
     {
-        // Act
         var currency = Currency.FromCode(code);
 
-        // Assert
         Assert.Equal(code.ToUpperInvariant(), currency.Code);
     }
 
@@ -37,8 +33,7 @@ public class CurrencyTests
     [InlineData(null)]
     public void Currency_WithEmptyOrWhiteSpaceCode_ShouldThrowArgumentException(string? invalidCode)
     {
-        // Act & Assert
-        Assert.Throws<ArgumentException>(() => Currency.FromCode(invalidCode!));
+        Assert.Throws<DomainException>(() => Currency.FromCode(invalidCode!));
     }
 
     [Theory]
@@ -48,8 +43,7 @@ public class CurrencyTests
     [InlineData("12345")]
     public void Currency_WithInvalidLength_ShouldThrowArgumentException(string invalidCode)
     {
-        // Act & Assert
-        var exception = Assert.Throws<ArgumentException>(() => Currency.FromCode(invalidCode));
+        var exception = Assert.Throws<DomainException>(() => Currency.FromCode(invalidCode));
         Assert.Contains("must be 3 characters", exception.Message);
     }
 
@@ -61,10 +55,8 @@ public class CurrencyTests
     [InlineData("BRL")]
     public void Currency_WithCommonIsoCodes_ShouldCreateSuccessfully(string code)
     {
-        // Act
         var currency = Currency.FromCode(code);
 
-        // Assert
         Assert.NotNull(currency);
         Assert.Equal(code, currency.Code);
     }
@@ -72,12 +64,10 @@ public class CurrencyTests
     [Fact]
     public void Currency_RecordEquality_ShouldWorkCorrectly()
     {
-        // Arrange
         var currency1 = Currency.FromCode("USD");
         var currency2 = Currency.FromCode("USD");
         var currency3 = Currency.FromCode("EUR");
 
-        // Assert
         Assert.Equal(currency1, currency2);
         Assert.NotEqual(currency1, currency3);
     }

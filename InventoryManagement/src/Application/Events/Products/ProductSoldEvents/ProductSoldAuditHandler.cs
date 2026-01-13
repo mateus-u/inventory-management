@@ -1,6 +1,7 @@
-﻿using Application.Common.DTOs;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using Application.Common.Mediator;
+using Application.Common.Services.AuditService.Interface;
+using Application.Common.Services.AuditService.Requests;
 using Domain.Events;
 using Microsoft.Extensions.Logging;
 
@@ -10,23 +11,26 @@ public class ProductSoldAuditHandler : INotificationHandler<ProductSoldEvent>
 {
     private readonly ILogger<ProductSoldAuditHandler> _logger;
     private readonly IAuditService _auditService;
+    private readonly ICurrentUser _currentUser;
 
     public ProductSoldAuditHandler(
         ILogger<ProductSoldAuditHandler> logger,
-        IAuditService auditService)
+        IAuditService auditService,
+        ICurrentUser currentUser)
     {
         _logger = logger;
         _auditService = auditService;
+        _currentUser = currentUser;
     }
 
     public async Task HandleAsync(ProductSoldEvent notification, CancellationToken cancellationToken = default)
     {
         try
         {
-            var auditLog = new AuditLogDto(
-                UserId: "system",
-                Email: notification.Product.Supplier.Email.Address,
-                ActionName: $"Product Sold: {notification.Product.Description}",
+            var auditLog = new AuditLogRequest(
+                UserId: _currentUser.Id.ToString(),
+                Email: _currentUser.Email,
+                ActionName: $"product-sold",
                 Timestamp: DateTime.UtcNow
             );
 

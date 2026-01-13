@@ -36,7 +36,7 @@ public class CategoryDeleteCommandHandler : IHandler<CategoryDeleteCommand, bool
 
         if (category == null)
         {
-            throw new NotFoundException("Category not found.");
+            return false;
         }
 
         _context.Categories.Remove(category);

@@ -2,7 +2,7 @@
 using Application.UseCases.Categories.Models;
 using Application.UseCases.Categories.Queries;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Common;
+using WebAPI.Common.Controllers;
 
 namespace WebAPI.Controllers;
 

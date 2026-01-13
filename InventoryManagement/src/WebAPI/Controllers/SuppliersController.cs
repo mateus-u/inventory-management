@@ -2,7 +2,7 @@ using Application.UseCases.Suppliers.Commands;
 using Application.UseCases.Suppliers.Models;
 using Application.UseCases.Suppliers.Queries;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Common;
+using WebAPI.Common.Controllers;
 
 namespace WebAPI.Controllers;
 
@@ -16,6 +16,13 @@ public class SuppliersController : ApiBaseController
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<SupplierResponse>>> GetAll(CancellationToken cancellationToken)
+    {
+        var result = await Mediator.SendAsync(new SupplierGetAllQuery(), cancellationToken);
+        return Ok(result);
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<SupplierResponse>> GetById(Guid id, CancellationToken cancellationToken)
     {
@@ -26,13 +33,6 @@ public class SuppliersController : ApiBaseController
             return NotFound();
         }
 
-        return Ok(result);
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<SupplierResponse>>> GetAll(CancellationToken cancellationToken)
-    {
-        var result = await Mediator.SendAsync(new SupplierGetAllQuery(), cancellationToken);
         return Ok(result);
     }
 

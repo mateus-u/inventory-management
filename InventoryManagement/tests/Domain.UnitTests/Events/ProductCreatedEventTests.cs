@@ -29,13 +29,10 @@ public class ProductCreatedEventTests
     [Fact]
     public void ProductCreatedEvent_Constructor_ShouldSetProductCorrectly()
     {
-        // Arrange
         var product = new Product("Test Product", CreateTestPrice(), CreateTestPrice(), CreateTestSupplier(), CreateTestCategory());
 
-        // Act
         var productCreatedEvent = new ProductCreatedEvent(product);
 
-        // Assert
         Assert.NotNull(productCreatedEvent);
         Assert.Equal(product, productCreatedEvent.Product);
     }
@@ -43,10 +40,8 @@ public class ProductCreatedEventTests
     [Fact]
     public void ProductCreatedEvent_ShouldBeRaisedWhenProductIsCreated()
     {
-        // Arrange & Act
         var product = new Product("Test Product", CreateTestPrice(), CreateTestPrice(), CreateTestSupplier(), CreateTestCategory());
 
-        // Assert
         Assert.Single(product.Events);
         var domainEvent = product.Events.First();
         Assert.IsType<ProductCreatedEvent>(domainEvent);

@@ -34,7 +34,6 @@ public class ProductUpdateStatusCommandTests : TestingBase
     [Fact]
     public async Task ProductUpdateStatusCommand_SellProduct_ShouldUpdateStatus()
     {
-        // Arrange
         var product = await CreateTestProduct();
 
         var command = new ProductUpdateStatusCommand
@@ -43,14 +42,12 @@ public class ProductUpdateStatusCommandTests : TestingBase
         };
         command.SetId(product.Id);
 
-        // Act
         using var scope = ServiceProvider.CreateScope();
         var handler = new ProductUpdateCommandHandler(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());
 
         var result = await handler.HandleAsync(command);
 
-        // Assert
         result.Should().NotBeNull();
         result.Status.Should().Be(ProductStatus.Sold.ToString());
         result.SoldDate.Should().NotBeNull();
@@ -66,10 +63,8 @@ public class ProductUpdateStatusCommandTests : TestingBase
     [Fact]
     public async Task ProductUpdateStatusCommand_ReturnProduct_ShouldUpdateStatus()
     {
-        // Arrange
         var product = await CreateTestProduct();
         
-        // First sell the product
         var sellCommand = new ProductUpdateStatusCommand
         {
             Status = ProductStatus.Sold
@@ -89,14 +84,12 @@ public class ProductUpdateStatusCommandTests : TestingBase
         };
         command.SetId(product.Id);
 
-        // Act
         using var scope = ServiceProvider.CreateScope();
         var handler = new ProductUpdateCommandHandler(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());
 
         var result = await handler.HandleAsync(command);
 
-        // Assert
         result.Should().NotBeNull();
         result.Status.Should().Be(ProductStatus.Returned.ToString());
         result.ReturnDate.Should().NotBeNull();
@@ -105,10 +98,8 @@ public class ProductUpdateStatusCommandTests : TestingBase
     [Fact]
     public async Task ProductUpdateStatusCommand_CancelProduct_ShouldUpdateStatus()
     {
-        // Arrange
         var product = await CreateTestProduct();
         
-        // First sell the product
         var sellCommand = new ProductUpdateStatusCommand
         {
             Status = ProductStatus.Sold
@@ -128,14 +119,12 @@ public class ProductUpdateStatusCommandTests : TestingBase
         };
         command.SetId(product.Id);
 
-        // Act
         using var scope = ServiceProvider.CreateScope();
         var handler = new ProductUpdateCommandHandler(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());
 
         var result = await handler.HandleAsync(command);
 
-        // Assert
         result.Should().NotBeNull();
         result.Status.Should().Be(ProductStatus.Canceled.ToString());
         result.CancelDate.Should().NotBeNull();
@@ -144,14 +133,12 @@ public class ProductUpdateStatusCommandTests : TestingBase
     [Fact]
     public async Task ProductUpdateStatusCommand_WithNonExistentProduct_ShouldThrowException()
     {
-        // Arrange
         var command = new ProductUpdateStatusCommand
         {
             Status = ProductStatus.Sold
         };
         command.SetId(Guid.NewGuid());
 
-        // Act & Assert
         using var scope = ServiceProvider.CreateScope();
         var handler = new ProductUpdateCommandHandler(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());
@@ -163,7 +150,6 @@ public class ProductUpdateStatusCommandTests : TestingBase
     [Fact]
     public async Task ProductUpdateStatusCommand_ReturnNonSoldProduct_ShouldThrowDomainException()
     {
-        // Arrange
         var product = await CreateTestProduct();
 
         var command = new ProductUpdateStatusCommand
@@ -172,7 +158,6 @@ public class ProductUpdateStatusCommandTests : TestingBase
         };
         command.SetId(product.Id);
 
-        // Act & Assert
         using var scope = ServiceProvider.CreateScope();
         var handler = new ProductUpdateCommandHandler(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());
@@ -184,10 +169,8 @@ public class ProductUpdateStatusCommandTests : TestingBase
     [Fact]
     public async Task ProductUpdateStatusCommand_SellAlreadySoldProduct_ShouldThrowDomainException()
     {
-        // Arrange
         var product = await CreateTestProduct();
         
-        // First sell the product
         var sellCommand = new ProductUpdateStatusCommand
         {
             Status = ProductStatus.Sold
@@ -207,7 +190,6 @@ public class ProductUpdateStatusCommandTests : TestingBase
         };
         command.SetId(product.Id);
 
-        // Act & Assert
         using var scope = ServiceProvider.CreateScope();
         var handler = new ProductUpdateCommandHandler(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());

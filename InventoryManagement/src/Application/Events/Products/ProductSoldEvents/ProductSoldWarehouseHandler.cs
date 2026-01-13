@@ -1,5 +1,5 @@
-﻿using Application.Common.Interfaces;
-using Application.Common.Mediator;
+﻿using Application.Common.Mediator;
+using Application.Common.Services.WMSService.Interface;
 using Domain.Events;
 using Microsoft.Extensions.Logging;
 

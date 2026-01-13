@@ -1,3 +1,5 @@
+using Domain.Common.Exceptions;
+
 namespace Domain.ValueObjects;
 
 public sealed record Price
@@ -20,12 +22,12 @@ public sealed record Price
     {
         if (amount < 0)
         {
-            throw new ArgumentException("Amount cannot be negative.", nameof(amount));
+            throw new DomainException("Amount cannot be negative.");
         }
 
         if (currency == null)
         {
-            throw new ArgumentNullException(nameof(currency), "Currency cannot be null.");
+            throw new DomainException("Currency cannot be null.");
         }
 
         return new Price(amount, currency);

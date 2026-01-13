@@ -1,5 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Mediator;
+using Application.Common.Services.AuditService.Interface;
+using Application.Common.Services.WMSService.Interface;
 using Infrastructure.Database;
 using Infrastructure.Database.Interceptors;
 using Infrastructure.Services;

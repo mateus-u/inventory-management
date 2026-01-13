@@ -13,21 +13,18 @@ public class CategoryCreateCommandTests : TestingBase
     [Fact]
     public async Task CategoryCreateCommand_WithValidData_ShouldCreateCategory()
     {
-        // Arrange
         var command = new CategoryCreateCommand
         {
             Name = "Electronics",
             Shortcode = "ELEC"
         };
 
-        // Act
         using var scope = ServiceProvider.CreateScope();
         var handler = new CategoryCreateCommandHandler(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());
 
         var result = await handler.HandleAsync(command);
 
-        // Assert
         result.Should().NotBeNull();
         result.Name.Should().Be("Electronics");
         result.Shortcode.Should().Be("ELEC");
@@ -43,7 +40,6 @@ public class CategoryCreateCommandTests : TestingBase
     [Fact]
     public async Task CategoryCreateCommand_WithParent_ShouldCreateCategoryWithParent()
     {
-        // Arrange
         var parentCategory = new Category("Electronics", "ELEC");
 
         await ExecuteDbContextAsync(async context =>
@@ -59,14 +55,12 @@ public class CategoryCreateCommandTests : TestingBase
             ParentId = parentCategory.Id
         };
 
-        // Act
         using var scope = ServiceProvider.CreateScope();
         var handler = new CategoryCreateCommandHandler(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());
 
         var result = await handler.HandleAsync(command);
 
-        // Assert
         result.Should().NotBeNull();
         result.Name.Should().Be("Smartphones");
         result.ParentId.Should().Be(parentCategory.Id);
@@ -76,15 +70,13 @@ public class CategoryCreateCommandTests : TestingBase
     [Fact]
     public async Task CategoryCreateCommand_WithInvalidParentId_ShouldThrowException()
     {
-        // Arrange
         var command = new CategoryCreateCommand
         {
             Name = "Smartphones",
             Shortcode = "PHONE",
-            ParentId = Guid.NewGuid() // Non-existent parent
+            ParentId = Guid.NewGuid()
         };
 
-        // Act & Assert
         using var scope = ServiceProvider.CreateScope();
         var handler = new CategoryCreateCommandHandler(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());
@@ -96,7 +88,6 @@ public class CategoryCreateCommandTests : TestingBase
     [Fact]
     public async Task CategoryCreateCommand_WithEmptyName_ShouldFailValidation()
     {
-        // Arrange
         var command = new CategoryCreateCommand
         {
             Name = "",
@@ -107,10 +98,8 @@ public class CategoryCreateCommandTests : TestingBase
         var validator = new CategoryCreateCommandValidator(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());
 
-        // Act
         var result = await validator.ValidateAsync(command);
 
-        // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().Contain(e => e.PropertyName == nameof(command.Name));
     }
@@ -118,7 +107,6 @@ public class CategoryCreateCommandTests : TestingBase
     [Fact]
     public async Task CategoryCreateCommand_WithEmptyShortcode_ShouldFailValidation()
     {
-        // Arrange
         var command = new CategoryCreateCommand
         {
             Name = "Electronics",
@@ -129,10 +117,8 @@ public class CategoryCreateCommandTests : TestingBase
         var validator = new CategoryCreateCommandValidator(
             scope.ServiceProvider.GetRequiredService<IApplicationDbContext>());
 
-        // Act
         var result = await validator.ValidateAsync(command);
 
-        // Assert
         result.IsValid.Should().BeFalse();
         result.Errors.Should().Contain(e => e.PropertyName == nameof(command.Shortcode));
     }

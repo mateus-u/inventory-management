@@ -1,7 +1,7 @@
 ﻿using Application.Common.Mediator;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebAPI.Common;
+namespace WebAPI.Common.Controllers;
 
 [ApiController]
 public abstract class ApiBaseController : ControllerBase

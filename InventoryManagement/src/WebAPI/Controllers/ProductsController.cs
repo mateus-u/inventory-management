@@ -1,7 +1,7 @@
 using Application.UseCases.Products.Commands;
 using Application.UseCases.Products.Queries;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Common;
+using WebAPI.Common.Controllers;
 
 namespace WebAPI.Controllers;
 
@@ -15,6 +15,13 @@ public class ProductsController : ApiBaseController
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    {
+        var result = await Mediator.SendAsync(new ProductGetAllQuery(), cancellationToken);
+        return Ok(result);
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
@@ -25,13 +32,6 @@ public class ProductsController : ApiBaseController
             return NotFound();
         }
 
-        return Ok(result);
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
-    {
-        var result = await Mediator.SendAsync(new ProductGetAllQuery(), cancellationToken);
         return Ok(result);
     }
 

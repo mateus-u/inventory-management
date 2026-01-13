@@ -9,16 +9,13 @@ public class SupplierTests
     [Fact]
     public void Supplier_Constructor_ShouldCreateSupplierWithCorrectProperties()
     {
-        // Arrange
         var name = "Test Supplier";
         var email = new Email("supplier@test.com");
         var currency = Currency.FromCode("USD");
         var country = Country.FromCode("US");
 
-        // Act
         var supplier = new Supplier(name, email, currency, country);
 
-        // Assert
         Assert.NotEqual(Guid.Empty, supplier.Id);
         Assert.Equal(name, supplier.Name);
         Assert.Equal(email, supplier.Email);
@@ -32,56 +29,44 @@ public class SupplierTests
     [InlineData(null)]
     public void Supplier_WithEmptyOrWhiteSpaceName_ShouldThrowDomainException(string? invalidName)
     {
-        // Arrange
         var email = new Email("supplier@test.com");
         var currency = Currency.FromCode("USD");
         var country = Country.FromCode("US");
 
-        // Act & Assert
-        var exception = Assert.Throws<DomainException>(() => 
-            new Supplier(invalidName!, email, currency, country));
+        var exception = Assert.Throws<DomainException>(() => new Supplier(invalidName!, email, currency, country));
         Assert.Contains("Name cannot be empty", exception.Message);
     }
 
     [Fact]
     public void Supplier_WithNullEmail_ShouldThrowDomainException()
     {
-        // Arrange
         var name = "Test Supplier";
         var currency = Currency.FromCode("USD");
         var country = Country.FromCode("US");
 
-        // Act & Assert
-        var exception = Assert.Throws<DomainException>(() => 
-            new Supplier(name, null!, currency, country));
+        var exception = Assert.Throws<DomainException>(() => new Supplier(name, null!, currency, country));
         Assert.Contains("Email cannot be null", exception.Message);
     }
 
     [Fact]
     public void Supplier_WithNullCurrency_ShouldThrowDomainException()
     {
-        // Arrange
         var name = "Test Supplier";
         var email = new Email("supplier@test.com");
         var country = Country.FromCode("US");
 
-        // Act & Assert
-        var exception = Assert.Throws<DomainException>(() => 
-            new Supplier(name, email, null!, country));
+        var exception = Assert.Throws<DomainException>(() => new Supplier(name, email, null!, country));
         Assert.Contains("Currency cannot be null", exception.Message);
     }
 
     [Fact]
     public void Supplier_WithNullCountry_ShouldThrowDomainException()
     {
-        // Arrange
         var name = "Test Supplier";
         var email = new Email("supplier@test.com");
         var currency = Currency.FromCode("USD");
 
-        // Act & Assert
-        var exception = Assert.Throws<DomainException>(() => 
-            new Supplier(name, email, currency, null!));
+        var exception = Assert.Throws<DomainException>(() => new Supplier(name, email, currency, null!));
         Assert.Contains("Country cannot be null", exception.Message);
     }
 
@@ -92,15 +77,12 @@ public class SupplierTests
     public void Supplier_WithVariousValidData_ShouldCreateSuccessfully(
         string name, string emailAddress, string currencyCode, string countryCode)
     {
-        // Arrange
         var email = new Email(emailAddress);
         var currency = Currency.FromCode(currencyCode);
         var country = Country.FromCode(countryCode);
 
-        // Act
         var supplier = new Supplier(name, email, currency, country);
 
-        // Assert
         Assert.NotNull(supplier);
         Assert.Equal(name, supplier.Name);
         Assert.Equal(emailAddress, supplier.Email.Address);

@@ -8,14 +8,11 @@ public class CategoryTests
     [Fact]
     public void Category_Constructor_ShouldCreateCategoryWithCorrectProperties()
     {
-        // Arrange
         var name = "Electronics";
         var shortcode = "ELEC";
 
-        // Act
         var category = new Category(name, shortcode);
 
-        // Assert
         Assert.NotEqual(Guid.Empty, category.Id);
         Assert.Equal(name, category.Name);
         Assert.Equal(shortcode, category.Shortcode);
@@ -25,15 +22,12 @@ public class CategoryTests
     [Fact]
     public void Category_Constructor_WithParent_ShouldSetParentCorrectly()
     {
-        // Arrange
         var parentCategory = new Category("Electronics", "ELEC");
         var name = "Smartphones";
         var shortcode = "PHONE";
 
-        // Act
         var category = new Category(name, shortcode, parentCategory);
 
-        // Assert
         Assert.NotEqual(Guid.Empty, category.Id);
         Assert.Equal(name, category.Name);
         Assert.Equal(shortcode, category.Shortcode);
@@ -47,12 +41,9 @@ public class CategoryTests
     [InlineData(null)]
     public void Category_WithEmptyOrWhiteSpaceName_ShouldThrowDomainException(string? invalidName)
     {
-        // Arrange
         var shortcode = "TEST";
 
-        // Act & Assert
-        var exception = Assert.Throws<DomainException>(() => 
-            new Category(invalidName!, shortcode));
+        var exception = Assert.Throws<DomainException>(() => new Category(invalidName!, shortcode));
         Assert.Contains("Name cannot be empty", exception.Message);
     }
 
@@ -62,12 +53,9 @@ public class CategoryTests
     [InlineData(null)]
     public void Category_WithEmptyOrWhiteSpaceShortcode_ShouldThrowDomainException(string? invalidShortcode)
     {
-        // Arrange
         var name = "Test Category";
 
-        // Act & Assert
-        var exception = Assert.Throws<DomainException>(() => 
-            new Category(name, invalidShortcode!));
+        var exception = Assert.Throws<DomainException>(() => new Category(name, invalidShortcode!));
         Assert.Contains("Shortcode cannot be empty", exception.Message);
     }
 
@@ -78,10 +66,8 @@ public class CategoryTests
     [InlineData("Sports & Outdoors", "SPORT")]
     public void Category_WithVariousValidData_ShouldCreateSuccessfully(string name, string shortcode)
     {
-        // Act
         var category = new Category(name, shortcode);
 
-        // Assert
         Assert.NotNull(category);
         Assert.Equal(name, category.Name);
         Assert.Equal(shortcode, category.Shortcode);
@@ -90,12 +76,10 @@ public class CategoryTests
     [Fact]
     public void Category_HierarchyWithMultipleLevels_ShouldWorkCorrectly()
     {
-        // Arrange
         var rootCategory = new Category("Electronics", "ELEC");
         var midCategory = new Category("Mobile Devices", "MOBILE", rootCategory);
         var leafCategory = new Category("Smartphones", "PHONE", midCategory);
 
-        // Assert
         Assert.Null(rootCategory.Parent);
         Assert.Equal(rootCategory, midCategory.Parent);
         Assert.Equal(midCategory, leafCategory.Parent);

@@ -67,7 +67,7 @@ public class Product : BaseEntity
 
         if(Status == ProductStatus.Sold)
         {
-            throw new DomainException("Product already solded");
+            throw new DomainException("This product has already been sold");
         }
 
         Status = ProductStatus.Sold;

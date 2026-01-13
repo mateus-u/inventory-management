@@ -1,6 +1,7 @@
-﻿using Application.Common.DTOs;
-using Application.Common.Interfaces;
+﻿using Application.Common.Interfaces;
 using Application.Common.Mediator;
+using Application.Common.Services.WMSService.Interface;
+using Application.Common.Services.WMSService.Requests;
 using Domain.Events;
 using Microsoft.Extensions.Logging;
 namespace Application.Events.Products.ProductCreatedEvents;
@@ -25,11 +26,11 @@ public class ProductCreatedWarehouseHandler : INotificationHandler<ProductCreate
     {
         try
         {
-            var wmsProduct = new WmsProductDto(
-                Name: notification.Product.Description,
-                Description: $"{notification.Product.Category.Name} from {notification.Product.Supplier.Name}",
-                Price: 0, 
-                Quantity: 1
+            var wmsProduct = new WmsProductRequest(
+                ProductId: notification.Product.Id.ToString(),
+                Description: notification.Product.Description,
+                CategoryShortcode: notification.Product.Category?.Shortcode,
+                SupplierId: notification.Product.Supplier?.Id.ToString()
             );
 
             var response = await _wmsService.CreateProductAsync(wmsProduct, cancellationToken);

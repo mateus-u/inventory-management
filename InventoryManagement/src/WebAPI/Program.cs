@@ -1,4 +1,5 @@
 using Application;
+using Application.Common.Interfaces;
 using FluentValidation.AspNetCore;
 using Infrastructure;
 using Infrastructure.Database;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using Serilog;
 using WebAPI.Common.Filters;
+using WebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +37,8 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 var app = builder.Build();
 

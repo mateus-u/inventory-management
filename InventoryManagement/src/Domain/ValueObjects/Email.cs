@@ -1,4 +1,6 @@
-﻿namespace Domain.ValueObjects;
+﻿using Domain.Common.Exceptions;
+
+namespace Domain.ValueObjects;
 
 public class Email
 {
@@ -8,7 +10,7 @@ public class Email
     {
         if (string.IsNullOrWhiteSpace(address) || !address.Contains("@"))
         {
-            throw new ArgumentException("Invalid email address.", nameof(address));
+            throw new DomainException("Invalid email address.");
         }
         Address = address;
     }

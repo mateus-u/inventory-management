@@ -1,4 +1,6 @@
 using Application.Common.Interfaces;
+using Application.Common.Services.AuditService.Interface;
+using Application.Common.Services.WMSService.Interface;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
