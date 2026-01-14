@@ -84,6 +84,8 @@ public class ProductCreateCommandHandler : IHandler<ProductCreateCommand, Produc
             CategoryId = product.Category.Id,
             CategoryName = product.Category.Name,
             Status = product.Status.ToString(),
+            AcquisitionCost = product.AcquisitionCost.Amount,
+            AcquisitionCostUSD = product.AcquisitionCostUSD.Amount,
             AcquireDate = product.AcquireDate,
             SoldDate = product.SoldDate,
             CancelDate = product.CancelDate,

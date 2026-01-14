@@ -37,12 +37,12 @@ public class ProductCreatedWarehouseHandler : INotificationHandler<ProductCreate
             
             notification.Product.SetWmsProductId(response.WmsProductId);
             await _dbContext.SaveChangesAsync(cancellationToken);
-            
-            _logger.LogInformation($"Product created in WMS: {notification.Product.Id} -> {response.WmsProductId}");
+
+            _logger.LogInformation("Create WMS product: {ProductId}, WmsProductId: {WmsProductId}", notification.Product.Id, response.WmsProductId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Failed to create product in WMS: {notification.Product.Id}");
+            _logger.LogError(ex, "Failed to create product in WMS: {ProductId}", notification.Product.Id);
         }
     }
 }

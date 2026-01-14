@@ -45,14 +45,12 @@ public class ProductSoldEmailHandler : INotificationHandler<ProductSoldEvent>
                 isHtml: true,
                 cancellationToken);
 
-            _logger.LogInformation("Product sold - Email sent to {Email} for product {ProductId}", 
-                product.Supplier.Email.Address, product.Id);
+            _logger.LogInformation("Email sent for product sale: {ProductId}", notification.Product.Id);
+
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to send email notification for sold product {ProductId}", 
-                notification.Product.Id);
-            // Don't rethrow - we don't want email failures to break the main flow
+            _logger.LogError(ex, "Failed to send email notification for sold product {ProductId}", notification.Product.Id);
         }
     }
 }

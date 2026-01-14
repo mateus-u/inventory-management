@@ -34,13 +34,14 @@ public class ProductSoldAuditHandler : INotificationHandler<ProductSoldEvent>
                 Timestamp: DateTime.UtcNow
             );
 
-            await _auditService.LogActionAsync(auditLog, cancellationToken);
-            
-            _logger.LogInformation($"Product sold - Audit logged: {notification.Product.Id}");
+            var response = await _auditService.LogActionAsync(auditLog, cancellationToken);
+
+            _logger.LogInformation("Audit logged for product sale: {ProductId}, Message: {Message}", notification.Product.Id, response.Message);
+
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Failed to log audit for product sale: {notification.Product.Id}");
+            _logger.LogError(ex, "Failed to log audit for product sale: {ProductId}", notification.Product.Id);
         }
     }
 }

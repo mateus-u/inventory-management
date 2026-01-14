@@ -35,17 +35,4 @@ public class SuppliersController : ApiBaseController
 
         return Ok(result);
     }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
-    {
-        var result = await Mediator.SendAsync(new SupplierDeleteCommand { Id = id }, cancellationToken);
-        
-        if (!result)
-        {
-            return NotFound();
-        }
-
-        return NoContent();
-    }
 }

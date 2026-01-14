@@ -32,13 +32,13 @@ public class ProductCreatedAuditHandler : INotificationHandler<ProductCreatedEve
                 Timestamp: DateTime.UtcNow
             );
 
-            await _auditService.LogActionAsync(auditLog, cancellationToken);
-            
-            _logger.LogInformation($"Product created - Audit logged: {notification.Product.Id}");
+            var response = await _auditService.LogActionAsync(auditLog, cancellationToken);
+
+            _logger.LogInformation("Audit logged for product creation: {ProductId}, Message: {Message}", notification.Product.Id, response.Message);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Failed to log audit for product creation: {notification.Product.Id}");
+            _logger.LogError(ex, "Failed to log audit for product creation: {ProductId}", notification.Product.Id);
         }
     }
 }

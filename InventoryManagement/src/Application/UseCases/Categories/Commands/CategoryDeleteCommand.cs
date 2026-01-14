@@ -1,6 +1,5 @@
 using Application.Common.Interfaces;
 using Application.Common.Mediator;
-using Application.Exceptions;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,8 +14,7 @@ public class CategoryDeleteCommandValidator : AbstractValidator<CategoryDeleteCo
 {
     public CategoryDeleteCommandValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("Id is required.");
+        RuleFor(x => x.Id).NotEmpty().WithMessage("Id is required.");
     }
 }
 
@@ -37,6 +35,14 @@ public class CategoryDeleteCommandHandler : IHandler<CategoryDeleteCommand, bool
         if (category == null)
         {
             return false;
+        }
+
+        var hasProducts = await _context.Products
+            .AnyAsync(p => p.Category.Id == request.Id, cancellationToken);
+
+        if (hasProducts)
+        {
+            throw new ValidationException("Cannot delete category with associated products.");
         }
 
         _context.Categories.Remove(category);

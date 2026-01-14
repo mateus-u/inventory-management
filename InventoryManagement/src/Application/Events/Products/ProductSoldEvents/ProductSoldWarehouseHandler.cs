@@ -29,12 +29,13 @@ public class ProductSoldWarehouseHandler : INotificationHandler<ProductSoldEvent
             }
 
             var response = await _wmsService.DispatchProductAsync(notification.Product.WmsProductId, cancellationToken);
-            
-            _logger.LogInformation($"Product sold - Warehouse dispatch successful: {notification.Product.Id} - {response.Message}");
+
+            _logger.LogInformation("Dispatch WMS product: {ProductId}, Message: {Message}", notification.Product.Id, response.Message);
+
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Failed to dispatch product in WMS: {notification.Product.Id}");
+            _logger.LogError(ex, "Failed to dispatch product in WMS: {ProductId}", notification.Product.Id);
         }
     }
 }

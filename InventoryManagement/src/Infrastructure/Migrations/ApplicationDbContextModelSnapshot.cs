@@ -139,7 +139,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Category", "Parent")
                         .WithMany()
                         .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Parent");
                 });

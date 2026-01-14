@@ -16,5 +16,4 @@ public class ProductResponse
     public DateTime? CancelDate { get; set; }
     public DateTime? ReturnDate { get; set; }
     public DateTime CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
 }

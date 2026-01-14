@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class First : Migration
+    public partial class FirstMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,7 +29,7 @@ namespace Infrastructure.Migrations
                         column: x => x.ParentId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -56,6 +56,11 @@ namespace Infrastructure.Migrations
                     SupplierId = table.Column<Guid>(type: "uuid", nullable: false),
                     CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    WmsProductId = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    AcquisitionCost_Amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    AcquisitionCost_Currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
+                    AcquisitionCostUSD_Amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    AcquisitionCostUSD_Currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
                     AcquireDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     SoldDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
